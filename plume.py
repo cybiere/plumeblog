@@ -1,6 +1,38 @@
 from flask import Flask
 from flask import render_template
+from flask import abort
+
+from os import listdir
+from os.path import isfile, join
+
 app = Flask(__name__)
+
+class Post:
+    def __init__(self,postFilePath=None):
+        attributes = {
+                'title': lambda self,val: setattr(self,'title',val.strip()),
+                'author': lambda self,val: setattr(self,'author',val.strip()),
+        }
+
+        for key, value in attributes.items():
+            value(self,"")
+        if postFilePath==None:
+            return
+
+        try:
+            postFile = open(postFilePath,"r", encoding="utf-8")
+        except:
+            print('Open post file {} failed.',postFilePath)
+            raise ValueError
+        postFileContent = postFile.read()
+        postFile.close()
+        postHeader,postContent = postFileContent.split('\n\n',maxsplit=1)
+        headers = postHeader.splitlines()
+        for header in headers:
+            key,value = header.split(':',maxsplit=1)
+            key=key.strip().lower()
+            if key in attributes:
+                attributes[key](self,val=value)
 
 @app.route('/')
 def index():
@@ -11,3 +43,13 @@ def index():
 def hello(name=None):
     return render_template('hello.html', name=name)
 
+@app.route('/refresh/<key>')
+def refresh(key=None):
+    if key==None or key!="maclef":
+        abort(404)
+    files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
+    titles= []
+    for post in files:
+        newPost = Post(post)
+        titles.append(newPost.title + " - " + newPost.author)
+    return "<br />".join(titles)
