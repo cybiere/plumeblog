@@ -71,7 +71,8 @@ class Post:
             self.url = "-".join(result)
         if "" in self.tags:
             self.tags.remove("")
-
+        
+        self.excerpt = ' '.join(postContent.split()[:40]) + "..."
 
 
 @app.route('/refresh/<key>')
