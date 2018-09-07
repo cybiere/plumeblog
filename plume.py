@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# coding: utf8
+
+
 from flask import Flask
 from flask import render_template
 from flask import abort
@@ -5,13 +9,29 @@ from flask import abort
 from os import listdir
 from os.path import isfile, join
 
+from datetime import datetime
+
 app = Flask(__name__)
+
+###############################################################################
+####################                Refresh                ####################
+###############################################################################
+
+def parseDate(datetimeString):
+    if datetimeString == "":
+        return None
+    try: 
+        date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d %H:%M")
+    except ValueError:
+        date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d")
+    return date
 
 class Post:
     def __init__(self,postFilePath=None):
         attributes = {
                 'title': lambda self,val: setattr(self,'title',val.strip()),
                 'author': lambda self,val: setattr(self,'author',val.strip()),
+                'date': lambda self,val: setattr(self,'date',parseDate(val.strip()))
         }
 
         for key, value in attributes.items():
@@ -34,6 +54,27 @@ class Post:
             if key in attributes:
                 attributes[key](self,val=value)
 
+
+@app.route('/refresh/<key>')
+def refresh(key=None):
+    if key==None or key!="maclef":
+        abort(404)
+    files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
+    posts=[]
+    for post in files:
+        posts.append(Post(post))
+
+    posts.sort(key=lambda p: p.date,reverse=True)
+
+    titles= []
+    for post in posts:
+        titles.append(post.date.strftime("%Y-%m-%d %H:%M") + " - " + post.title + " - " + post.author)
+    return "<br />".join(titles)
+
+###############################################################################
+####################                 Index                 ####################
+###############################################################################
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -43,13 +84,4 @@ def index():
 def hello(name=None):
     return render_template('hello.html', name=name)
 
-@app.route('/refresh/<key>')
-def refresh(key=None):
-    if key==None or key!="maclef":
-        abort(404)
-    files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
-    titles= []
-    for post in files:
-        newPost = Post(post)
-        titles.append(newPost.title + " - " + newPost.author)
-    return "<br />".join(titles)
+

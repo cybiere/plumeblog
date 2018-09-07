@@ -1,4 +1,4 @@
-date:2015-01-02 21:30
+date:2015-01-30 21:30
 title:Titre de mon article
 url:titre-de-mon-article
 tags:tag1 tag2 tag3

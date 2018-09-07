@@ -1,4 +1,4 @@
-date:2015-12-14 21:30
+date:2015-12-14
 title:Titre d'un deuxième article : encodage, échappement et le bordel
 status:public
 
