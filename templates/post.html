@@ -20,5 +20,6 @@
 	</div>
 </section>
 
-
+{% if oldPost %}<div><a href="{{ url_for('post',url=oldPost.url)}}">Older post</a> : {{ oldPost.title }}</div>{% endif %}
+{% if newPost %}<div><a href="{{ url_for('post',url=newPost.url)}}">Newer post</a> : {{ newPost.title }}</div>{% endif %}
 {% endblock %}

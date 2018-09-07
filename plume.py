@@ -85,14 +85,25 @@ def getIndex(start=0,number=10):
         indexData.append(Post(post['file']))
     return indexData
 
-def getPostByUrl(url):
+def getPostIdByUrl(url):
     jsonFile = open("postData.json", "r")
     data = json.load(jsonFile);
     jsonFile.close()
-    for post in data['posts']:
+    for id,post in enumerate(data['posts']):
         if post['url'] == url:
-            return Post(post['file']);
-    return None
+            return id;
+    return -1
+
+
+def getPostById(postId):
+    if postId < 0:
+        return None
+    jsonFile = open("postData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    if postId >= len(data['posts']):
+        return None
+    return Post(data['posts'][postId]['file']);
 
 @app.route('/refresh/<key>')
 def refresh(key=None):
@@ -141,9 +152,12 @@ def index():
 
 @app.route('/post/<url>')
 def post(url):
-    post = getPostByUrl(url)
-    if post == None:
+    postId = getPostIdByUrl(url)
+    if postId == -1:
         abort(404)
-    return render_template('post.html', post=post)
+    post = getPostById(postId)
+    oldPost = getPostById(postId+1)
+    newPost = getPostById(postId-1)
+    return render_template('post.html', post=post, oldPost=oldPost, newPost=newPost)
 
 
