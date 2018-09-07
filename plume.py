@@ -95,7 +95,10 @@ def refresh(key=None):
             else:
                 tags[tag] = [post.url]
 
-    js = json.dumps([[post.__dict__ for post in posts],tags], default=str)
+    jsonFile = open("postData.json", "w")
+    json.dump([[post.__dict__ for post in posts],tags], jsonFile, default=str)
+    jsonFile.close()
+    js = json.dumps({"success":True,"posts":len(posts),"tags":len(tags)})
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
