@@ -23,4 +23,7 @@
 	</div>
 </section>
 {% endfor %}
+
+{% if not isLast %}<div><a href="{{ url_for('index',page=page+1)}}">Older posts</a></div>{% endif %}
+{% if not isFirst %}<div><a href="{{ url_for('index',page=page-1)}}">Newer posts</a></div>{% endif %}
 {% endblock %}

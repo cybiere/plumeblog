@@ -83,7 +83,7 @@ def getIndex(start=0,number=10):
     indexData = []
     for post in data['posts'][start:start+number]:
         indexData.append(Post(post['file']))
-    return indexData
+    return (indexData,start == 0,indexData[-1].file == data['posts'][-1]['file'])
 
 def getPostIdByUrl(url):
     jsonFile = open("postData.json", "r")
@@ -147,8 +147,12 @@ def refresh(key=None):
 ###############################################################################
 
 @app.route('/')
-def index():
-    return render_template('index.html',posts=getIndex())
+@app.route('/page/<page>')
+def index(page=1):
+    postsPerPage=10
+    page=int(page)
+    posts,isFirst,isLast = getIndex((page-1)*postsPerPage,postsPerPage)
+    return render_template('index.html',posts=posts,page=page,isFirst=isFirst,isLast=isLast)
 
 @app.route('/post/<url>')
 def post(url):
