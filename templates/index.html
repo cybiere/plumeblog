@@ -3,10 +3,10 @@
 {% block content %}
 <h1 class="content-subhead">Derniers articles</h1>
 
-{% for post in data.posts %}
+{% for post in posts %}
 <section class="post">
 	<header class="post-header">
-		<h2 class="post-title">{{ post.title }}</h2>
+		<h2 class="post-title"><a href="{{ url_for('post', url=post.url) }}">{{ post.title }}</a></h2>
 
 		<p class="post-meta">
 		Le {{ post.date }}{% if post.author != "" %} par {{ post.author }}{% endif %}

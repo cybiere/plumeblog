@@ -72,8 +72,27 @@ class Post:
         if "" in self.tags:
             self.tags.remove("")
         
+        #Content and not header
+        self.content = postContent
         self.excerpt = ' '.join(postContent.split()[:40]) + "..."
 
+def getIndex(start=0,number=10):
+    jsonFile = open("postData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    indexData = []
+    for post in data['posts'][start:start+number]:
+        indexData.append(Post(post['file']))
+    return indexData
+
+def getPostByUrl(url):
+    jsonFile = open("postData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    for post in data['posts']:
+        if post['url'] == url:
+            return Post(post['file']);
+    return None
 
 @app.route('/refresh/<key>')
 def refresh(key=None):
@@ -81,8 +100,8 @@ def refresh(key=None):
         abort(404)
     files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
     posts=[]
-    for post in files:
-        posts.append(Post(post))
+    for postFile in files:
+        posts.append(Post(postFile))
 
     posts.sort(key=lambda p: p.position)
     posts.sort(key=lambda p: p.date,reverse=True)
@@ -108,14 +127,13 @@ def refresh(key=None):
 
 @app.route('/')
 def index():
-    jsonFile = open("postData.json", "r")
-    data = json.load(jsonFile);
-    jsonFile.close()
-    return render_template('index.html',data=data)
+    return render_template('index.html',posts=getIndex())
 
-@app.route('/post/')
 @app.route('/post/<url>')
-def hello(url=None):
-    return render_template('post.html', url=url)
+def post(url):
+    post = getPostByUrl(url)
+    if post == None:
+        abort(404)
+    return render_template('post.html', post=post)
 
 

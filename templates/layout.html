@@ -1,4 +1,7 @@
 {% import "config.html" as cfg %}
+{% if cfg.blogName is not defined %}
+{% import "config.sample.html" as cfg %}
+{% endif %}
 
 <!doctype html>
 <html>
