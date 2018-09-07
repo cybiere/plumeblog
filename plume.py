@@ -86,8 +86,15 @@ def refresh(key=None):
     posts.sort(key=lambda p: p.position)
     posts.sort(key=lambda p: p.date,reverse=True)
 
+    tags={}
+    for post in posts:
+        for tag in post.tags:
+            if tag in tags:
+                tags[tag] += 1
+            else:
+                tags[tag] = 1
 
-    js = json.dumps([post.__dict__ for post in posts], default=str)
+    js = json.dumps([[post.__dict__ for post in posts],tags], default=str)
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
