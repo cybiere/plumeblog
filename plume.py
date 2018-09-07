@@ -107,15 +107,25 @@ def refresh(key=None):
     posts.sort(key=lambda p: p.date,reverse=True)
 
     tags={}
+    shortPosts=[]
     for post in posts:
         for tag in post.tags:
             if tag in tags:
                 tags[tag].append(post.url)
             else:
                 tags[tag] = [post.url]
+        shortPosts.append({
+            'date':post.date,
+            'title': post.title,
+            'status':post.status,
+            'author':post.author,
+            'tags':post.tags,
+            'file':post.file,
+            'url':post.url
+        })
 
     jsonFile = open("postData.json", "w")
-    json.dump({"posts":[post.__dict__ for post in posts],"tags":tags}, jsonFile, default=str)
+    json.dump({"posts":shortPosts,"tags":tags}, jsonFile, default=str)
     jsonFile.close()
     js = json.dumps({"success":True,"posts":len(posts),"tags":len(tags)})
     resp = Response(js, status=200, mimetype='application/json')
