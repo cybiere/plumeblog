@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Hello from Flask !{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
 {% block content %}
 <div class="content-subhead"><a href="{{ url_for('index') }}">Go back to index</a></div>
 <section class="post">
