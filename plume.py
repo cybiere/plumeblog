@@ -96,7 +96,7 @@ def refresh(key=None):
                 tags[tag] = [post.url]
 
     jsonFile = open("postData.json", "w")
-    json.dump([[post.__dict__ for post in posts],tags], jsonFile, default=str)
+    json.dump({"posts":[post.__dict__ for post in posts],"tags":tags}, jsonFile, default=str)
     jsonFile.close()
     js = json.dumps({"success":True,"posts":len(posts),"tags":len(tags)})
     resp = Response(js, status=200, mimetype='application/json')
@@ -108,7 +108,10 @@ def refresh(key=None):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    jsonFile = open("postData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    return render_template('index.html',data=data)
 
 @app.route('/post/')
 @app.route('/post/<url>')

@@ -3,21 +3,24 @@
 {% block content %}
 <h1 class="content-subhead">Derniers articles</h1>
 
+{% for post in data.posts %}
 <section class="post">
 	<header class="post-header">
-
-		<h2 class="post-title">Introducing Pure</h2>
+		<h2 class="post-title">{{ post.title }}</h2>
 
 		<p class="post-meta">
-		By <a href="#" class="post-author">Tilo Mitra</a> under <a class="post-category post-category-design" href="#">CSS</a> <a class="post-category post-category-pure" href="#">Pure</a>
+		Le {{ post.date }}{% if post.author != "" %} par {{ post.author }}{% endif %}
+		{% for tag in post.tags %}
+		<a class="post-category post-category-design" href="#">{{ tag }}</a>
+		{% endfor %}
 		</p>
 	</header>
 
 	<div class="post-description">
 		<p>
-		Yesterday at CSSConf, we launched Pure – a new CSS library. Phew! Here are the <a href="https://speakerdeck.com/tilomitra/pure-bliss">slides from the presentation</a>. Although it looks pretty minimalist, we’ve been working on Pure for several months. After many iterations, we have released Pure as a set of small, responsive, CSS modules that you can use in every web project.
+		{{ post.excerpt }}
 		</p>
 	</div>
 </section>
-
+{% endfor %}
 {% endblock %}
