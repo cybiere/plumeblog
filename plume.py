@@ -91,9 +91,9 @@ def refresh(key=None):
     for post in posts:
         for tag in post.tags:
             if tag in tags:
-                tags[tag] += 1
+                tags[tag].append(post.url)
             else:
-                tags[tag] = 1
+                tags[tag] = [post.url]
 
     js = json.dumps([[post.__dict__ for post in posts],tags], default=str)
     resp = Response(js, status=200, mimetype='application/json')
