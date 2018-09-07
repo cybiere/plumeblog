@@ -2,14 +2,16 @@
 # coding: utf8
 
 
-from flask import Flask
-from flask import render_template
-from flask import abort
+from flask import Flask, render_template, abort, Response
 
 from os import listdir
 from os.path import isfile, join
 
 from datetime import datetime
+
+import json
+import re
+import unidecode
 
 app = Flask(__name__)
 
@@ -29,9 +31,14 @@ def parseDate(datetimeString):
 class Post:
     def __init__(self,postFilePath=None):
         attributes = {
+                'date': lambda self,val: setattr(self,'date',parseDate(val.strip())),
                 'title': lambda self,val: setattr(self,'title',val.strip()),
+                'status': lambda self,val: setattr(self,'status',val.strip()),
                 'author': lambda self,val: setattr(self,'author',val.strip()),
-                'date': lambda self,val: setattr(self,'date',parseDate(val.strip()))
+                'tags': lambda self,val: setattr(self,'tags',val.strip().split(' ')),
+                'position': lambda self,val: setattr(self,'position',val.strip()),
+                'file': lambda self,val: setattr(self,'file',val.strip()),
+                'url': lambda self,val: setattr(self,'url',val.strip()),
         }
 
         for key, value in attributes.items():
@@ -42,7 +49,6 @@ class Post:
         try:
             postFile = open(postFilePath,"r", encoding="utf-8")
         except:
-            print('Open post file {} failed.',postFilePath)
             raise ValueError
         postFileContent = postFile.read()
         postFile.close()
@@ -53,6 +59,19 @@ class Post:
             key=key.strip().lower()
             if key in attributes:
                 attributes[key](self,val=value)
+        attributes['file'](self,postFilePath)
+        
+        if self.position == "":
+            self.position = "0";
+        if self.url == "":
+            _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+')
+            result = []
+            for word in _punct_re.split(self.title.lower()):
+                result.append(unidecode.unidecode(word))
+            self.url = "-".join(result)
+        if "" in self.tags:
+            self.tags.remove("")
+
 
 
 @app.route('/refresh/<key>')
@@ -64,12 +83,13 @@ def refresh(key=None):
     for post in files:
         posts.append(Post(post))
 
+    posts.sort(key=lambda p: p.position)
     posts.sort(key=lambda p: p.date,reverse=True)
 
-    titles= []
-    for post in posts:
-        titles.append(post.date.strftime("%Y-%m-%d %H:%M") + " - " + post.title + " - " + post.author)
-    return "<br />".join(titles)
+
+    js = json.dumps([post.__dict__ for post in posts], default=str)
+    resp = Response(js, status=200, mimetype='application/json')
+    return resp
 
 ###############################################################################
 ####################                 Index                 ####################
