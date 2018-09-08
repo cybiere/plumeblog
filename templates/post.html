@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
-<div class="content-subhead"><a href="{{ url_for('index') }}">Go back to index</a></div>
+<div class="content-subhead"><a href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a></div>
 <section class="post">
 	<header class="post-header">
 		<h1 class="post-title">{{ post.title }}</h1>
 
 		<p class="post-meta">
-		{{ post.date }}{% if post.author != "" %} by {{ post.author }}{% endif %}
+		{{ t[cfg.lng]['datePrefix'] }}{{ post.date }}{% if post.author != "" %} {{ t[cfg.lng]['byAuthor'] }}{{ post.author }}{% endif %}
 		{% for tag in post.tags %}
 		<a class="post-category post-category-design" href="#">{{ tag }}</a>
 		{% endfor %}
@@ -20,6 +20,6 @@
 	</div>
 </section>
 
-{% if oldPost %}<div><a href="{{ url_for('post',url=oldPost.url)}}">Older post</a> : {{ oldPost.title }}</div>{% endif %}
-{% if newPost %}<div><a href="{{ url_for('post',url=newPost.url)}}">Newer post</a> : {{ newPost.title }}</div>{% endif %}
+{% if oldPost %}<div><a href="{{ url_for('post',url=oldPost.url)}}">{{ t[cfg.lng]['olderPost'] }}</a>: {{ oldPost.title }}</div>{% endif %}
+{% if newPost %}<div><a href="{{ url_for('post',url=newPost.url)}}">{{ t[cfg.lng]['newerPost'] }}</a>: {{ newPost.title }}</div>{% endif %}
 {% endblock %}

@@ -1,7 +1,5 @@
 {% import "config.html" as cfg %}
-{% if cfg.blogName is not defined %}
-{% import "config.sample.html" as cfg %}
-{% endif %}
+{% from "strings.html" import t %}
 
 <!doctype html>
 <html>
