@@ -77,7 +77,7 @@ class Post:
         self.excerpt = ' '.join(postContent.split()[:40]) + "..."
 
 def getIndex(start=0,number=10):
-    jsonFile = open("postData.json", "r")
+    jsonFile = open("contentData.json", "r")
     data = json.load(jsonFile);
     jsonFile.close()
     indexData = []
@@ -85,25 +85,32 @@ def getIndex(start=0,number=10):
         indexData.append(Post(post['file']))
     return (indexData,start == 0,indexData[-1].file == data['posts'][-1]['file'])
 
-def getPostIdByUrl(url):
-    jsonFile = open("postData.json", "r")
+def getPostIdByUrl(url,draft=False):
+    jsonFile = open("contentData.json", "r")
     data = json.load(jsonFile);
     jsonFile.close()
-    for id,post in enumerate(data['posts']):
+    if draft:
+        postList='drafts'
+    else:
+        postList='posts'
+    for id,post in enumerate(data[postList]):
         if post['url'] == url:
             return id;
     return -1
 
-
-def getPostById(postId):
+def getPostById(postId,draft=False):
     if postId < 0:
         return None
-    jsonFile = open("postData.json", "r")
+    jsonFile = open("contentData.json", "r")
     data = json.load(jsonFile);
     jsonFile.close()
-    if postId >= len(data['posts']):
+    if draft:
+        postList="drafts"
+    else:
+        postList="posts"
+    if postId >= len(data[postList]):
         return None
-    return Post(data['posts'][postId]['file']);
+    return Post(data[postList][postId]['file']);
 
 @app.route('/refresh/<key>')
 def refresh(key=None):
@@ -118,27 +125,40 @@ def refresh(key=None):
     posts.sort(key=lambda p: p.date,reverse=True)
 
     tags={}
-    shortPosts=[]
+    shortPublicPosts=[]
+    shortDraftPosts=[]
     for post in posts:
-        for tag in post.tags:
-            if tag in tags:
-                tags[tag].append(post.url)
-            else:
-                tags[tag] = [post.url]
-        shortPosts.append({
-            'date':post.date,
-            'title': post.title,
-            'status':post.status,
-            'author':post.author,
-            'tags':post.tags,
-            'file':post.file,
-            'url':post.url
-        })
+        if post.status == 'public':
+            for tag in post.tags:
+                if tag in tags:
+                    tags[tag].append(post.url)
+                else:
+                    tags[tag] = [post.url]
+            shortPublicPosts.append({
+                'date':post.date,
+                'title': post.title,
+                'status':post.status,
+                'author':post.author,
+                'tags':post.tags,
+                'file':post.file,
+                'url':post.url
+            })
+        else:
+            shortDraftPosts.append({
+                'date':post.date,
+                'title': post.title,
+                'status':post.status,
+                'author':post.author,
+                'tags':post.tags,
+                'file':post.file,
+                'url':post.url
+            })
 
-    jsonFile = open("postData.json", "w")
-    json.dump({"posts":shortPosts,"tags":tags}, jsonFile, default=str)
+
+    jsonFile = open("contentData.json", "w")
+    json.dump({"posts":shortPublicPosts,"drafts":shortDraftPosts,"tags":tags}, jsonFile, default=str)
     jsonFile.close()
-    js = json.dumps({"success":True,"posts":len(posts),"tags":len(tags)})
+    js = json.dumps({"success":True,"posts":{"total":len(posts),"public":len(shortPublicPosts),"drafts":len(shortDraftPosts)},"tags":len(tags)})
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
@@ -163,5 +183,13 @@ def post(url):
     oldPost = getPostById(postId+1)
     newPost = getPostById(postId-1)
     return render_template('post.html', post=post, oldPost=oldPost, newPost=newPost)
+
+@app.route('/draft/<url>')
+def draft(url):
+    postId = getPostIdByUrl(url,draft=True)
+    if postId == -1:
+        abort(404)
+    post = getPostById(postId,draft=True)
+    return render_template('post.html', post=post)
 
 
