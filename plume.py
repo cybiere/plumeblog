@@ -15,10 +15,6 @@ import unidecode
 
 app = Flask(__name__)
 
-###############################################################################
-####################                Refresh                ####################
-###############################################################################
-
 def parseDate(datetimeString):
     if datetimeString == "":
         return None
@@ -111,6 +107,18 @@ def getPostById(postId,draft=False):
     if postId >= len(data[postList]):
         return None
     return Post(data[postList][postId]['file']);
+
+###############################################################################
+####################                Filters                ####################
+###############################################################################
+
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%d-%m-%Y'):
+    return value.strftime(format)
+
+###############################################################################
+####################                Refresh                ####################
+###############################################################################
 
 @app.route('/refresh/<key>')
 def refresh(key=None):
