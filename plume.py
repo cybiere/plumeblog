@@ -21,7 +21,10 @@ def parseDate(datetimeString):
     try: 
         date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d %H:%M")
     except ValueError:
-        date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d")
+        try : 
+            date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d")
+        except ValueError:
+            date = datetime.strptime(datetimeString.strip(),"%Y-%m-%d %H:%M:%S")
     return date
 
 class Post:
@@ -76,10 +79,19 @@ def getIndex(start=0,number=10):
     jsonFile = open("contentData.json", "r")
     data = json.load(jsonFile);
     jsonFile.close()
+    if start>=len(data['posts']):
+        return ([],False,True)
+    #Get offset to hide not yet published posts
+    offset=0
+    while(parseDate(data['posts'][offset]['date']) > datetime.now() and offset<len(data['posts'])):
+        offset+=1
+    start += offset
+    if start>=len(data['posts']):
+        return ([],False,True)
     indexData = []
     for post in data['posts'][start:start+number]:
         indexData.append(Post(post['file']))
-    return (indexData,start == 0,indexData[-1].file == data['posts'][-1]['file'])
+    return (indexData,start == offset,indexData[-1].file == data['posts'][-1]['file'])
 
 def getPostIdByUrl(url,draft=False):
     jsonFile = open("contentData.json", "r")
@@ -177,7 +189,7 @@ def refresh(key=None):
 @app.route('/')
 @app.route('/page/<page>')
 def index(page=1):
-    postsPerPage=10
+    postsPerPage=2
     page=int(page)
     posts,isFirst,isLast = getIndex((page-1)*postsPerPage,postsPerPage)
     return render_template('index.html',posts=posts,page=page,isFirst=isFirst,isLast=isLast)
