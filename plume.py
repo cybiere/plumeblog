@@ -12,6 +12,7 @@ from datetime import datetime
 import json
 import re
 import unidecode
+import markdown
 
 app = Flask(__name__)
 
@@ -72,8 +73,9 @@ class Post:
             self.tags.remove("")
         
         #Content and not header
-        self.content = postContent
-        self.excerpt = ' '.join(postContent.split()[:40]) + "..."
+        self.content = markdown.markdown(postContent)
+        cleanr = re.compile('<.*?>')
+        self.excerpt = re.sub(cleanr, '',markdown.markdown(' '.join(postContent.split()[:40]) + "..."))
 
 def getIndex(start=0,number=10):
     jsonFile = open("contentData.json", "r")
