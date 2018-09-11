@@ -106,6 +106,27 @@ def getPostIdByUrl(url,draft=False):
             return id;
     return -1
 
+def getPostByUrl(url):
+    jsonFile = open("contentData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    for id,post in enumerate(data['posts']):
+        if post['url'] == url:
+            return Post(post['file']);
+    for id,post in enumerate(data['drafts']):
+        if post['url'] == url:
+            return Post(post['file']);
+    return None
+
+def getPostsByTag(tag):
+    jsonFile = open("contentData.json", "r")
+    data = json.load(jsonFile);
+    jsonFile.close()
+    posts = []
+    for url in data['tags'][tag]:
+        posts.append(getPostByUrl(url))
+    return posts
+
 def getPostById(postId,draft=False):
     if postId < 0:
         return None
@@ -212,4 +233,7 @@ def draft(url):
     post = getPostById(postId,draft=True)
     return render_template('post.html', post=post)
 
-
+@app.route('/tag/<tag>')
+def tag(tag):
+    posts=getPostsByTag(tag)
+    return render_template('tags.html', posts=posts, tag=tag)

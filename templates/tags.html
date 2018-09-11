@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}{{ t[cfg.lng]['home'] }}{% endblock %}
 {% block content %}
-<h1 class="content-subhead">{{ t[cfg.lng]['latestContent'] }}</h1>
+<h1 class="content-subhead">{{ t[cfg.lng]['postsWithTag'] }}: {{ tag }}</h1>
+<div class="content-subhead"><a href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a></div>
 
 {% for post in posts %}
 <section class="post">
@@ -23,7 +24,4 @@
 	</div>
 </section>
 {% endfor %}
-
-{% if not isLast %}<div><a href="{{ url_for('index',page=page+1)}}">{{ t[cfg.lng]['olderPosts'] }}</a></div>{% endif %}
-{% if not isFirst %}<div><a href="{{ url_for('index',page=page-1)}}">{{ t[cfg.lng]['newerPosts'] }}</a></div>{% endif %}
 {% endblock %}
