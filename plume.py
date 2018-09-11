@@ -155,7 +155,10 @@ def datetimeformat(value, format='%d-%m-%Y'):
 
 @app.route('/refresh/<key>')
 def refresh(key=None):
-    if key==None or key!="maclef":
+    keyFile = open('refresh.key','r')
+    goodKey = keyFile.read().splitlines()[0]
+    keyFile.close()
+    if key==None or key!=goodKey:
         abort(404)
     files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
     posts=[]
