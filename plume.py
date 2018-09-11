@@ -189,7 +189,7 @@ def refresh(key=None):
 @app.route('/')
 @app.route('/page/<page>')
 def index(page=1):
-    postsPerPage=2
+    postsPerPage=10
     page=int(page)
     posts,isFirst,isLast = getIndex((page-1)*postsPerPage,postsPerPage)
     return render_template('index.html',posts=posts,page=page,isFirst=isFirst,isLast=isLast)
