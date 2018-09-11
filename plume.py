@@ -2,7 +2,7 @@
 # coding: utf8
 
 
-from flask import Flask, render_template, abort, Response
+from flask import Flask, render_template, abort, Response, send_from_directory
 
 from os import listdir
 from os.path import isfile, join
@@ -242,3 +242,8 @@ def draft(url):
 def tag(tag):
     posts=getPostsByTag(tag)
     return render_template('tags.html', posts=posts, tag=tag)
+
+@app.route('/img/<img>')
+def img(img):
+    return send_from_directory("posts/img",img);
+
