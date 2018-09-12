@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% block title %}{{ t[cfg.lng]['home'] }}{% endblock %}
-{% block content %}
-<h1 class="content-subhead">{{ t[cfg.lng]['latestContent'] }}</h1>
 
+{% block title %}{{ t[cfg.lng]['home'] }}{% endblock %}
+
+{% block content %}
 {% for post in posts %}
 <section class="post">
 	<header class="post-header">
@@ -16,11 +16,12 @@
 		</p>
 	</header>
 
-	<div class="post-description">
+	<article class="post-description">
 		<p>
 		{{ post.excerpt }}
 		</p>
-	</div>
+	</article>
+	<a class="see-more" href="{{ url_for('post', url=post.url) }}">{{ t[cfg.lng]['seeMore'] }}...</a>
 </section>
 {% endfor %}
 
