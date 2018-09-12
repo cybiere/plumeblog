@@ -93,7 +93,8 @@ class Post:
             result = []
             for word in _punct_re.split(self.title.lower()):
                 result.append(unidecode.unidecode(word))
-            self.url = "-".join(result)
+            newUrl = "-".join(result)
+            self.url = newUrl
         
         #if no tags are set ensure there wont be an empty tag created
         if "" in self.tags:
@@ -144,7 +145,7 @@ def getIndex(start=0,number=10):
     return (indexData,start == offset,indexData[-1].file == data['posts'][-1]['file'])
 
 def getPostIdByUrl(url,draft=False):
-    #Returns a post position in contentData JSON post/draft array, raises ValueError if not found
+    #Returns a post position in contentData JSON post/draft array, returns -1 if not found
     try:
         with open("contentData.json", "r") as jsonFile:
             data = json.load(jsonFile);
@@ -159,7 +160,7 @@ def getPostIdByUrl(url,draft=False):
     for id,post in enumerate(data[postList]):
         if post['url'] == url:
             return id;
-    raise ValueError
+    return -1
 
 def getPostByUrl(url):
     #Returns a post from its URL, return None if not found
@@ -302,19 +303,20 @@ def index(page=1):
 
 @app.route('/post/<url>')
 def post(url):
-    try:
-        postId = getPostIdByUrl(url)
-        post = getPostById(postId)
-        oldPost = getPostById(postId+1)
-        newPost = getPostById(postId-1)
-    except:
+    postId = getPostIdByUrl(url)
+    if postId == -1:
         abort(404)
+    post = getPostById(postId)
+    oldPost = getPostById(postId+1)
+    newPost = getPostById(postId-1)
     return render_template('post.html', post=post, oldPost=oldPost, newPost=newPost)
 
 @app.route('/draft/<url>')
 def draft(url):
+    postId = getPostIdByUrl(url,draft=True)
+    if postId == -1:
+        abort(404)
     try:
-        postId = getPostIdByUrl(url,draft=True)
         post = getPostById(postId,draft=True)
     except:
         abort(404)
