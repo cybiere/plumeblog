@@ -48,7 +48,6 @@ class Post:
     # Post object allows storing a post from a file as a structured object with additionnal info (excerpt, markdown interpretation...
     def __init__(self,postFilePath):
         #TODO No use to load/interpret content for refresh only ?
-        #TODO Handle wrongly formatted posts gracefully
         if postFilePath==None:
             raise ValueError
         
@@ -68,7 +67,6 @@ class Post:
         for key, value in attributes.items():
             value(self,"")
         
-        
         with open(postFilePath,"r", encoding="utf-8") as postFile:
             postFileContent = postFile.read()
         
@@ -76,7 +74,6 @@ class Post:
         postHeader,postContent = postFileContent.split('\n\n',maxsplit=1)
         
         #Parse headers
-        #TODO catch exceptions (valueError for dates...)
         headers = postHeader.splitlines()
         for header in headers:
             key,value = header.split(':',maxsplit=1)
@@ -115,13 +112,19 @@ class Post:
 
 def getIndex(start=0,number=10):
     #Returns the posts for the index, showing $number public posts starting at $start
-    with open("contentData.json", "r") as jsonFile:
-        data = json.load(jsonFile);
+    try:
+        with open("contentData.json", "r") as jsonFile:
+            data = json.load(jsonFile);
+    except:
+        abort(500)
     
     #Get offset to hide not yet published posts
     offset=0
-    while(parseDate(data['posts'][offset]['date']) > datetime.now() and offset<len(data['posts'])):
-        offset+=1
+    try:
+        while(parseDate(data['posts'][offset]['date']) > datetime.now() and offset<len(data['posts'])):
+            offset+=1
+    except ValueError:
+        abort(500)
     start += offset
 
     #If trying to start after the last post
@@ -131,15 +134,22 @@ def getIndex(start=0,number=10):
     #Retrieve posts
     indexData = []
     for post in data['posts'][start:start+number]:
-        indexData.append(Post(post['file']))
+        try:
+            newPost=Post(post['file'])
+        except:
+            continue
+        indexData.append(newPost)
     
     #Returns the posts, and wether the first returned is the latest post, and wether the last returned is the earliest post
     return (indexData,start == offset,indexData[-1].file == data['posts'][-1]['file'])
 
 def getPostIdByUrl(url,draft=False):
     #Returns a post position in contentData JSON post/draft array, raises ValueError if not found
-    with open("contentData.json", "r") as jsonFile:
-        data = json.load(jsonFile);
+    try:
+        with open("contentData.json", "r") as jsonFile:
+            data = json.load(jsonFile);
+    except:
+        abort(500)
     
     if draft:
         postList='drafts'
@@ -152,21 +162,27 @@ def getPostIdByUrl(url,draft=False):
     raise ValueError
 
 def getPostByUrl(url):
-    #Returns a post from its URL, raises ValueError if not found
-    with open("contentData.json", "r") as jsonFile:
-        data = json.load(jsonFile);
+    #Returns a post from its URL, return None if not found
+    try:
+        with open("contentData.json", "r") as jsonFile:
+            data = json.load(jsonFile);
+    except:
+        abort(500)
     for id,post in enumerate(data['posts']):
         if post['url'] == url:
             return Post(post['file']);
     for id,post in enumerate(data['drafts']):
         if post['url'] == url:
             return Post(post['file']);
-    raise ValueError
+    return None
 
 def getPostsByTag(tag):
     #Returns all posts having given tag (return can be empty)
-    with open("contentData.json", "r") as jsonFile:
-        data = json.load(jsonFile);
+    try:
+        with open("contentData.json", "r") as jsonFile:
+            data = json.load(jsonFile);
+    except:
+        abort(500)
     posts = []
     if tag not in data['tags']:
         return []
@@ -179,8 +195,11 @@ def getPostById(postId,draft=False):
     if postId < 0:
         return None
 
-    with open("contentData.json", "r") as jsonFile:
-        data = json.load(jsonFile);
+    try:
+        with open("contentData.json", "r") as jsonFile:
+            data = json.load(jsonFile);
+    except:
+        abort(500)
 
     if draft:
         postList="drafts"
@@ -188,7 +207,11 @@ def getPostById(postId,draft=False):
         postList="posts"
     if postId >= len(data[postList]):
         return None
-    return Post(data[postList][postId]['file']);
+    try:
+        post = Post(data[postList][postId]['file'])
+    except:
+        raise ValueError
+    return post
 
 ####################################################
 # Pages
@@ -207,8 +230,13 @@ def refresh(key=None):
     #Check all files in posts
     files = [join('posts',f) for f in listdir('posts') if isfile(join('posts', f))]
     posts=[]
+    errFile=[]
     for postFile in files:
-        #TODO Error management
+        try:
+            newPost = Post(postFile)
+        except ValueError:
+            errFile.append(postFile)
+            continue
         posts.append(Post(postFile))
 
     #Sort them by date (Ealier to older) and then position (ascending)
@@ -250,11 +278,14 @@ def refresh(key=None):
             })
 
     #Store JSON in contentData file
-    with open("contentData.json", "w") as jsonFile:
-        json.dump({"posts":shortPublicPosts,"drafts":shortDraftPosts,"tags":tags}, jsonFile, default=str)
+    try:
+        with open("contentData.json", "w") as jsonFile:
+            json.dump({"posts":shortPublicPosts,"drafts":shortDraftPosts,"tags":tags}, jsonFile, default=str)
+    except:
+        abort(500)
 
     #Return JSON info for owner to give status
-    js = json.dumps({"success":True,"posts":{"total":len(posts),"public":len(shortPublicPosts),"drafts":len(shortDraftPosts)},"tags":len(tags)})
+    js = json.dumps({"success":not errFile,"posts":{"total":len(posts),"public":len(shortPublicPosts),"drafts":len(shortDraftPosts)},"tags":len(tags),"errors":errFile})
     resp = Response(js, status=200, mimetype='application/json')
     return resp
 
@@ -263,40 +294,38 @@ def refresh(key=None):
 def index(page=1):
     postsPerPage=10
     page=int(page)
-    #TODO Error handling
-    posts,isFirst,isLast = getIndex((page-1)*postsPerPage,postsPerPage)
+    try:
+        posts,isFirst,isLast = getIndex((page-1)*postsPerPage,postsPerPage)
+    except:
+        abort(500)
     return render_template('index.html',posts=posts,page=page,isFirst=isFirst,isLast=isLast)
 
 @app.route('/post/<url>')
 def post(url):
-    #TODO Error Handling
-    postId = getPostIdByUrl(url)
-    if postId == -1:
+    try:
+        postId = getPostIdByUrl(url)
+        post = getPostById(postId)
+        oldPost = getPostById(postId+1)
+        newPost = getPostById(postId-1)
+    except:
         abort(404)
-    #TODO Error Handling
-    post = getPostById(postId)
-    oldPost = getPostById(postId+1)
-    newPost = getPostById(postId-1)
     return render_template('post.html', post=post, oldPost=oldPost, newPost=newPost)
 
 @app.route('/draft/<url>')
 def draft(url):
-    #TODO Error Handling
-    postId = getPostIdByUrl(url,draft=True)
-    if postId == -1:
+    try:
+        postId = getPostIdByUrl(url,draft=True)
+        post = getPostById(postId,draft=True)
+    except:
         abort(404)
-    #TODO Error Handling
-    post = getPostById(postId,draft=True)
     return render_template('post.html', post=post)
 
 @app.route('/tag/<tag>')
 def tag(tag):
-    #TODO Error Handling
     posts=getPostsByTag(tag)
     return render_template('tags.html', posts=posts, tag=tag)
 
 @app.route('/img/<img>')
 def img(img):
-    #TODO Error Handling
     return send_from_directory("posts/img",img);
 
