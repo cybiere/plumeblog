@@ -1,8 +1,12 @@
 {% extends "layout.html" %}
 {% block title %}{{ t[cfg.lng]['home'] }}{% endblock %}
 {% block content %}
-<h1 class="content-subhead">{{ t[cfg.lng]['postsWithTag'] }}: {{ tag }}</h1>
-<div class="content-subhead"><a href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a></div>
+<section class="post nopadding">
+	<div class="post-pagin">
+		<p>{{ t[cfg.lng]['postsWithTag'] }}: {{ tag }}</p>
+		<a class="newer" href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a>
+	</div>
+</section>
 
 {% for post in posts %}
 <section class="post">

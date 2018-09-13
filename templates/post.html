@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
-<div class="content-subhead"><a href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a></div>
+<section class="post nopadding">
+	<a class="post-back" href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a>
+</section>
 <section class="post">
 	<header class="post-header">
 		<h1 class="post-title">{{ post.title }}</h1>
@@ -18,8 +20,12 @@
 	<div class="post-description">
 		{{ post.content|safe }}
 	</div>
-</section>
 
-{% if oldPost %}<div><a href="{{ url_for('post',url=oldPost.url)}}">{{ t[cfg.lng]['olderPost'] }}</a>: {{ oldPost.title }}</div>{% endif %}
-{% if newPost %}<div><a href="{{ url_for('post',url=newPost.url)}}">{{ t[cfg.lng]['newerPost'] }}</a>: {{ newPost.title }}</div>{% endif %}
+</section>
+<section class="post nopadding">
+	<div class="post-pagin">
+		{% if oldPost %}<a class="older" href="{{ url_for('post',url=oldPost.url)}}">{{ t[cfg.lng]['olderPost'] }}:<br />{{ oldPost.title }}</a>{% endif %}
+		{% if newPost %}<a class="newer" href="{{ url_for('post',url=newPost.url)}}">{{ t[cfg.lng]['newerPost'] }}:<br />{{ newPost.title }}</a>{% endif %}
+	</div>
+</section>
 {% endblock %}

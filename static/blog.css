@@ -96,6 +96,33 @@ h3 {
 	border: 1px #222 solid;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
+.nopadding {
+	padding:0;
+}
+.post-back {
+	color:#aaa;
+	display:table;
+    table-layout: fixed;
+	width:100%;
+	padding: 0.5em;
+}
+.post-back:hover{
+	background:#444;
+}
+.post-pagin {
+	color:#aaa;
+	display:table;
+    table-layout: fixed;
+	width:100%;
+}
+.post-pagin a, .post-pagin p{
+	color:#aaa;
+	display:table-cell;
+	padding: 0.5em;
+}
+.post-pagin a.newer{
+	text-align:right;
+}
 .post .see-more{
 	color:#aaa;
 	display:block;
@@ -104,7 +131,7 @@ h3 {
 	text-align:right;
 	padding: 0.1em 0.3em;
 }
-.post .see-more:hover{
+.post .see-more:hover, .post-pagin a:hover{
 	background:#444;
 }
 .post-title {
