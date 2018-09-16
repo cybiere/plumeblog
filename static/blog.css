@@ -86,7 +86,7 @@ code {
 .nav-item a, .post-category{
 	background: transparent;
 	border: 1px #c47f2c solid;
-	color:#ddd;
+	color:#ccc;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 .nav-item a:hover, .nav-item a:focus, .post-category:hover {
@@ -105,7 +105,7 @@ code {
 
 .content {
 	padding: 2em 1em 0;
-	color:#ddd;
+	color:#ccc;
 }
 
 .post {
@@ -157,7 +157,7 @@ code {
 	font-size: 2em;
 	margin: 0.2em 0;
 	font-weight:normal;
-	color:#ddd;
+	color:#ccc;
 }
 .post-title a{
 	color:inherit;
