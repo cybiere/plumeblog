@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}{{ t[cfg.lng]['notFoundTitle'] }}{% endblock %}
+{% block content %}
+<section class="post nopadding">
+	<a class="post-back" href="{{ url_for('index') }}">{{ t[cfg.lng]['backIndex'] }}</a>
+</section>
+<section class="post">
+	<header class="post-header">
+		<h1 class="post-title shrug">¯\_(ツ)_/¯</h1>
+	</header>
+
+	<div class="post-description text404">
+		{{ t[cfg.lng]['notFoundContent']|safe }}
+	</div>
+
+</section>
+{% endblock %}

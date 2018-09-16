@@ -186,6 +186,15 @@ code {
     margin: 0 auto;
 }
 
+.shrug{
+	color: #c47f2c;
+	text-align:center;
+	font-size:5em;
+}
+.text404{
+	text-align:center;
+}
+
 @media (min-width: 48em) {
 	.content {
 		padding: 2em 3em 0;
