@@ -12,14 +12,24 @@ html, body, #layout, .sidebar,.content{
 
 a {
 	text-decoration: none;
-	color: #666;
+	color: #80ff00;
 }
 a:hover,a:focus {
-	color: #aaa;
+	color: #a6e22e;
 }
 
 h3 {
 	font-weight: 100;
+}
+
+code {
+	display: inline-block;
+	color: #e6db74;
+	background: #222;
+	border-radius: 5px;
+	padding:  0 4px;
+	font-family:monospace;
+	font-size:1.2em;
 }
 
 /* LAYOUT CSS */
@@ -46,6 +56,9 @@ h3 {
 .brand-title {
 	text-transform: uppercase;
 }
+.brand-title a{
+	color:#3579a8;
+}
 .brand-tagline {
 	font-size:1em;
 	font-weight: 300;
@@ -63,16 +76,15 @@ h3 {
 }
 .nav-item a {
 	background: transparent;
-	border: 2px solid #666;
-	color: #fff;
+	border: 2px solid #c47f2c;
+	color: #ddd ;
 	margin-top: 1em;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	font-size: 85%;
 }
 .nav-item a:hover, .nav-item a:focus {
-	border: 2px solid #aaa;
-	text-decoration: none;
+	color:#aaa;
 }
 
 .content-subhead {
@@ -136,13 +148,11 @@ h3 {
 }
 .post-title {
 	font-size: 2em;
-	color: #222;
+	color: #3579a8;
 	margin: 0.2em 0;
 }
-.post-avatar {
-	border-radius: 50px;
-	float: right;
-	margin-left: 1em;
+.post-title a{
+	color:inherit;
 }
 .post-description {
 	font-family: Sans;
@@ -158,23 +168,14 @@ h3 {
 	margin: 0 0.1em;
 	padding: 0.3em 1em;
 	font-size: 80%;
-	border: 1px #222 solid;
+	color:#ddd;
+	border: 1px #c47f2c solid;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .post-description img {
-	margin: auto;
-}
-
-.footer {
-	padding: 1em 0;
-}
-.footer a {
-	color: #ccc;
-	font-size: 80%;
-}
-.footer .pure-menu a:hover,.footer .pure-menu a:focus {
-	background: none;
+    display: block;
+    margin: 0 auto;
 }
 
 @media (min-width: 48em) {

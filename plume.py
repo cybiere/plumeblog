@@ -101,7 +101,7 @@ class Post:
             self.tags.remove("")
         
         #Interpret post content markdown
-        self.content = markdown.markdown(postContent)
+        self.content = markdown.markdown(postContent,output_format="html5",extensions=['markdown.extensions.fenced_code'])
         
         #Remove markdown and HTML from content for excerpt, keep only 40 first words
         cleanr = re.compile('<.*?>')
