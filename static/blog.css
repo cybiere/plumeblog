@@ -8,6 +8,7 @@ html{
 }
 html, body, #layout, .sidebar,.content{
 	height:100%;
+	font-family: sans;
 }
 
 a {
@@ -55,9 +56,11 @@ code {
 }
 .brand-title {
 	text-transform: uppercase;
+	font-size:2.4em;
 }
 .brand-title a{
-	color:#3579a8;
+	color: #c47f2c;
+	font-weight:normal;
 }
 .brand-tagline {
 	font-size:1em;
@@ -75,15 +78,18 @@ code {
 	zoom: 1;
 }
 .nav-item a {
-	background: transparent;
-	border: 2px solid #c47f2c;
-	color: #ddd ;
 	margin-top: 1em;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	font-size: 85%;
 }
-.nav-item a:hover, .nav-item a:focus {
+.nav-item a, .post-category{
+	background: transparent;
+	border: 1px #c47f2c solid;
+	color:#ddd;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.nav-item a:hover, .nav-item a:focus, .post-category:hover {
 	color:#aaa;
 }
 
@@ -145,11 +151,13 @@ code {
 }
 .post .see-more:hover, .post-pagin a:hover{
 	background:#444;
+	color: #a6e22e;
 }
 .post-title {
 	font-size: 2em;
-	color: #3579a8;
 	margin: 0.2em 0;
+	font-weight:normal;
+	color:#ddd;
 }
 .post-title a{
 	color:inherit;
@@ -164,13 +172,13 @@ code {
 	font-size: 90%;
 	margin: 0;
 }
+.post-meta span{
+	color: #AA53C2;
+}
 .post-category {
 	margin: 0 0.1em;
 	padding: 0.3em 1em;
 	font-size: 80%;
-	color:#ddd;
-	border: 1px #c47f2c solid;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .post-description img {

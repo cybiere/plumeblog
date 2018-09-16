@@ -9,9 +9,9 @@
 		<h1 class="post-title">{{ post.title }}</h1>
 
 		<p class="post-meta">
-		{{ t[cfg.lng]['datePrefix'] }}{{ post.date }}{% if post.author != "" %} {{ t[cfg.lng]['byAuthor'] }}{{ post.author }}{% endif %}
+		{{ t[cfg.lng]['datePrefix'] }}<span>{{ post.date|datetimeformat(t[cfg.lng]['dateFormat']) }}</span>{% if post.author != "" %} {{ t[cfg.lng]['byAuthor'] }}<span>{{ post.author }}</span>{% endif %}
 		{% for tag in post.tags %}
-		<a class="post-category post-category-design" href="{{ url_for('tag',tag=tag) }}">{{ tag }}</a>
+		<a class="post-category " href="{{ url_for('tag',tag=tag) }}">{{ tag }}</a>
 		{% endfor %}
 		</p>
 		</p>
