@@ -25,6 +25,10 @@
 </section>
 {% endfor %}
 
-{% if not isLast %}<div><a href="{{ url_for('index',page=page+1)}}">{{ t[cfg.lng]['olderPosts'] }}</a></div>{% endif %}
-{% if not isFirst %}<div><a href="{{ url_for('index',page=page-1)}}">{{ t[cfg.lng]['newerPosts'] }}</a></div>{% endif %}
+<section class="post nopadding">
+	<div class="post-pagin">
+		{% if not isLast %}<a class="older" href="{{ url_for('index',page=page+1)}}">{{ t[cfg.lng]['olderPosts'] }}</a>{% endif %}
+		{% if not isFirst %}<a class="newer" href="{{ url_for('index',page=page-1)}}">{{ t[cfg.lng]['newerPosts'] }}</a>{% endif %}
+	</div>
+</section>
 {% endblock %}
