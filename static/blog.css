@@ -167,6 +167,30 @@ img {
 	text-align:justify;
 	line-height: 1.8em;
 }
+.post-description h2,.post-description h3,.post-description h4,.post-description h5{
+	color:inherit;
+	font-weight:normal;
+}
+.post-description h2:before {
+	content: "⟩";
+	padding-right:3px;
+	color:#F92672;
+}
+.post-description h3:before {
+	content: "⟩⟩";
+	padding-right:3px;
+	color:#F92672;
+}
+.post-description h4:before {
+	content: "⟩⟩⟩";
+	padding-right:3px;
+	color:#F92672;
+}
+.post-description h5:before {
+	content: "⟩⟩⟩⟩";
+	padding-right:3px;
+	color:#F92672;
+}
 .post-meta {
 	color: #999;
 	font-size: .9em;
