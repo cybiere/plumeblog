@@ -43,12 +43,13 @@ img {
 }
 .header {
 	text-align: center;
-	top: auto;
-	margin: 3em auto;
 }
 .sidebar {
 	background: #222;
 	color: #fff;
+	display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .brand-title, .brand-tagline {
@@ -228,7 +229,6 @@ img {
 
 	.header {
 		padding:0 1em;
-		margin: 10em auto 0;
 		max-width: 40vh;
 	}
 

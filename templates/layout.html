@@ -19,7 +19,9 @@
 		<div id="layout" class="pure-g">
 			<header class="sidebar pure-u-1 pure-u-md-1-4">
 				<div class="header">
-					<img class="pure-img" src="{{ url_for('img',img=cfg.logo) }}" alt="{{ cfg.blogName }}"/>
+					{% if cfg.logo is defined %}
+						<img class="pure-img" src="{{ url_for('img',img=cfg.logo) }}" alt="{{ cfg.blogName }}"/>
+					{% endif %}
 					<h1 class="brand-title"><a href="{{ url_for('index') }}">{{ cfg.blogName }}</a></h1>
 					<p class="brand-tagline">{{ cfg.blogDescription }}</p>
 					<section class="nav">
