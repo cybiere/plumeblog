@@ -8,7 +8,7 @@ html{
 }
 html, body, #layout, .sidebar,.content{
 	height:100%;
-	font-family: sans;
+	font-family: sans-serif,sans;
 }
 
 a {
@@ -164,7 +164,6 @@ img {
 	color:inherit;
 }
 .post-description {
-	font-family: Sans;
 	text-align:justify;
 	line-height: 1.8em;
 }
